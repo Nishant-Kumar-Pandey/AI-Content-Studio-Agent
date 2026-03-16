@@ -25,21 +25,18 @@ load_dotenv()
 app = FastAPI(
     title="AI Content Studio Agent API",
     description="API for multimodal AI agent generating social media content packages.",
-    version="1.0.0"
+    version="1.1.0"
 )
 
-# OAuth Config
+# OAuth & URL Config
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
 GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
-
-# This should match your frontend URL in production
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
-# Backend URL for callbacks
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
-# Standard permissive CORS setup for hackathon project
+# Standard permissive CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,6 +47,7 @@ app.add_middleware(
 
 security = HTTPBearer()
 
+# Models
 class UserRegister(BaseModel):
     email: str
     password: str
@@ -66,6 +64,7 @@ class TalkRequest(BaseModel):
     message: str
     session_id: str = "default"
 
+# Auth Dependency
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(security)):
     token = credentials.credentials
     payload = verify_token(token)
@@ -76,6 +75,12 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     return user
+
+# --- AUTH ROUTES ---
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "AI Content Studio API is running.", "version": "1.1.0"}
 
 @app.post("/auth/register")
 async def register(user_data: UserRegister):
@@ -93,32 +98,27 @@ async def register(user_data: UserRegister):
 @app.post("/auth/login")
 async def login(user_data: UserLogin):
     user = get_user_by_email(user_data.email)
-    if not user or not verify_password(user_data.password, user["hashed_password"]):
+    if not user or not user["hashed_password"] or not verify_password(user_data.password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
     
     access_token = create_access_token(data={"sub": user["id"]})
     return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "name": user["full_name"]}}
 
-# --- OAUTH ROUTES ---
-
 @app.get("/auth/me")
 async def get_me(user=Depends(get_current_user)):
     return {"email": user["email"], "name": user["full_name"], "provider": user["provider"]}
 
+# --- OAUTH ROUTES ---
+
 @app.get("/auth/github/login")
 async def github_login():
-    github_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&scope=read:user user:email"
+    github_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&scope=read:user%20user:email"
     return RedirectResponse(github_url)
 
 @app.get("/auth/github/callback")
 async def github_callback(code: str):
     async with httpx.AsyncClient() as client:
-        # Exchange code for access token
-        params = {
-            "client_id": GITHUB_CLIENT_ID,
-            "client_secret": GITHUB_CLIENT_SECRET,
-            "code": code
-        }
+        params = {"client_id": GITHUB_CLIENT_ID, "client_secret": GITHUB_CLIENT_SECRET, "code": code}
         headers = {"Accept": "application/json"}
         token_res = await client.post("https://github.com/login/oauth/access_token", params=params, headers=headers)
         token_data = token_res.json()
@@ -127,43 +127,30 @@ async def github_callback(code: str):
             raise HTTPException(status_code=400, detail="Failed to get GitHub access token")
             
         access_token = token_data["access_token"]
-        
-        # Get user info
         headers["Authorization"] = f"token {access_token}"
         user_res = await client.get("https://api.github.com/user", headers=headers)
         user_info = user_res.json()
         
-        # Get user email (GitHub might return empty email if not public)
         email_res = await client.get("https://api.github.com/user/emails", headers=headers)
         emails = email_res.json()
-        primary_email = None
-        for e in emails:
-            if e.get("primary") and e.get("verified"):
-                primary_email = e.get("email")
-                break
+        primary_email = next((e.get("email") for e in emails if e.get("primary") and e.get("verified")), None)
         
         email = primary_email or user_info.get("email")
         if not email:
             raise HTTPException(status_code=400, detail="Failed to get email from GitHub")
             
         name = user_info.get("name") or user_info.get("login") or "GitHub User"
-        
-        # Find or create user
         user = get_user_by_email(email)
         if not user:
             user_id = str(uuid.uuid4())
             create_user(user_id, email, None, name, provider='github')
-            user = {"id": user_id, "email": email, "full_name": name}
+            user = {"id": user_id}
         
-        # Generate our own internal JWT
         internal_token = create_access_token(data={"sub": user["id"]})
-        
-        # Redirect to frontend with token
         return RedirectResponse(f"{FRONTEND_URL}/#token={internal_token}")
 
 @app.get("/auth/google/login")
 async def google_login():
-    # Construct Google OAuth URL
     redirect_uri = f"{BACKEND_URL}/auth/google/callback"
     google_url = (
         f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}"
@@ -175,14 +162,10 @@ async def google_login():
 @app.get("/auth/google/callback")
 async def google_callback(code: str):
     async with httpx.AsyncClient() as client:
-        # Exchange code for access token
         redirect_uri = f"{BACKEND_URL}/auth/google/callback"
         data = {
-            "client_id": GOOGLE_CLIENT_ID,
-            "client_secret": GOOGLE_CLIENT_SECRET,
-            "code": code,
-            "grant_type": "authorization_code",
-            "redirect_uri": redirect_uri
+            "client_id": GOOGLE_CLIENT_ID, "client_secret": GOOGLE_CLIENT_SECRET,
+            "code": code, "grant_type": "authorization_code", "redirect_uri": redirect_uri
         }
         token_res = await client.post("https://oauth2.googleapis.com/token", data=data)
         token_data = token_res.json()
@@ -191,8 +174,6 @@ async def google_callback(code: str):
             raise HTTPException(status_code=400, detail="Failed to get Google access token")
             
         access_token = token_data["access_token"]
-        
-        # Get user info
         headers = {"Authorization": f"Bearer {access_token}"}
         user_res = await client.get("https://www.googleapis.com/oauth2/v3/userinfo", headers=headers)
         user_info = user_res.json()
@@ -202,23 +183,16 @@ async def google_callback(code: str):
             raise HTTPException(status_code=400, detail="Failed to get email from Google")
             
         name = user_info.get("name", "Google User")
-        
-        # Find or create user
         user = get_user_by_email(email)
         if not user:
             user_id = str(uuid.uuid4())
             create_user(user_id, email, None, name, provider='google')
-            user = {"id": user_id, "email": email, "full_name": name}
+            user = {"id": user_id}
         
-        # Generate internal JWT
         internal_token = create_access_token(data={"sub": user["id"]})
-        
-        # Redirect to frontend
         return RedirectResponse(f"{FRONTEND_URL}/#token={internal_token}")
 
-@app.get("/")
-def read_root():
-    return {"status": "ok", "message": "AI Content Studio API is running. Send POST to /generate"}
+# --- CONTENT ROUTES ---
 
 @app.get("/trending")
 def get_trending_topics(user=Depends(get_current_user)):
@@ -241,38 +215,20 @@ def list_messages(session_id: str, user=Depends(get_current_user)):
 async def generate_endpoint(request: GenerateRequest, user=Depends(get_current_user)):
     if not request.topic:
         raise HTTPException(status_code=400, detail="Topic is required")
-        
     try:
-        result = generate_content_package(request.topic)
-        if isinstance(result, dict) and "script" in result and "Quota Reached" in result["script"]:
-             raise HTTPException(status_code=429, detail="Gemini API Quota Reached")
-        return result
-    except HTTPException as he:
-        raise he
+        return generate_content_package(request.topic)
     except Exception as e:
-        error_str = str(e)
-        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "QUOTA_ERROR" in error_str:
-            raise HTTPException(status_code=429, detail="Gemini API Quota Reached")
-        print(f"Error in generate endpoint: {e}")
+        print(f"Error in /generate: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/talk")
 async def talk_endpoint(request: TalkRequest, user=Depends(get_current_user)):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message is required")
-    
     try:
-        result = handle_conversation(request.message, user["id"], request.session_id)
-        if "Quota Reached" in result.get("reply", ""):
-            raise HTTPException(status_code=429, detail="Gemini API Quota Reached")
-        return result
-    except HTTPException as he:
-        raise he
+        return handle_conversation(request.message, user["id"], request.session_id)
     except Exception as e:
-        error_str = str(e)
-        if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str or "QUOTA_ERROR" in error_str:
-            raise HTTPException(status_code=429, detail="Gemini API Quota Reached")
-        print(f"Error in talk endpoint: {e}")
+        print(f"Error in /talk: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
