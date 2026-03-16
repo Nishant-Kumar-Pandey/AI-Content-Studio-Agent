@@ -10,6 +10,15 @@ import os
 import httpx
 import traceback
 import logging
+import sys
+
+# Explicit logging to stdout for Render
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(levelname)s: %(name)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+logger = logging.getLogger("studio_api")
 
 from services.content_service import generate_content_package
 from services.conversation_service import handle_conversation
@@ -38,24 +47,34 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
-# Handle logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # Global Exception Handler for 500 errors
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error("GLOBAL EXCEPTION CAUGHT")
+    logger.error("!!! GLOBAL EXCEPTION CAUGHT !!!")
     logger.error(f"Request: {request.method} {request.url}")
     logger.error(traceback.format_exc())
     return {"detail": "Internal Server Error", "traceback": str(exc)}
+
+# Logging Middleware for ALL requests
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"REQ BEGIN: {request.method} {request.url}")
+    logger.info(f"HEADERS: {dict(request.headers)}")
+    try:
+        response = await call_next(request)
+        logger.info(f"REQ END: {request.method} {request.url} - STATUS: {response.status_code}")
+        return response
+    except Exception as e:
+        logger.error(f"REQ FAILED: {request.method} {request.url} - ERROR: {e}")
+        logger.error(traceback.format_exc())
+        raise e
 
 # Robust CORS setup
 origins = [
     FRONTEND_URL,
     "http://localhost:5173",
     "https://ai-content-studio-agent.vercel.app",
-    "https://ai-content-studio-ag.vercel.app", # Corrected Vercel origin
+    "https://ai-content-studio-ag.vercel.app",
 ]
 
 app.add_middleware(
@@ -98,6 +117,28 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(
     return user
 
 # --- AUTH ROUTES ---
+
+@app.get("/diag")
+async def diagnostics():
+    from tools.database import DB_PATH
+    db_status = "Unknown"
+    try:
+        db_dir = os.path.dirname(DB_PATH)
+        writable = os.access(db_dir, os.W_OK)
+        db_exists = os.path.exists(DB_PATH)
+        db_status = f"Dir Writable: {writable}, DB Exists: {db_exists}"
+    except Exception as e:
+        db_status = f"Check failed: {e}"
+
+    return {
+        "status": "online",
+        "database": db_status,
+        "env": {
+            "FRONTEND_URL": FRONTEND_URL,
+            "BACKEND_URL": BACKEND_URL,
+        },
+        "cors_origins": origins
+    }
 
 @app.get("/")
 def read_root():
