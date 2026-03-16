@@ -7,7 +7,11 @@ import './index.css';
 
 // Using Vite env variables or fallback to local
 const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
-const GENERATE_URL = `${API_BASE}/generate`;
+// Robustly handle trailing slash and ensure it hits /generate
+const BASE_CLEAN = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
+const GENERATE_URL = `${BASE_CLEAN}/generate`;
+
+console.log("DEBUG: Target API URL is:", GENERATE_URL);
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
