@@ -42,7 +42,12 @@ const AuthPage = () => {
   };
 
   const handleOAuth = (provider) => {
-    alert(`${provider} login coming soon! Requires Client ID setup.`);
+    const providerLower = provider.toLowerCase();
+    if (['google', 'github'].includes(providerLower)) {
+      window.location.href = `${BASE_CLEAN}/auth/${providerLower}/login`;
+    } else {
+      alert(`${provider} login coming soon! Requires Client ID setup.`);
+    }
   };
 
   return (

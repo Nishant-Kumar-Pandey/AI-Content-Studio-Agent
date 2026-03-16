@@ -1,10 +1,13 @@
 from datetime import timedelta
-from fastapi import FastAPI, HTTPException, Depends, Security
+from fastapi import FastAPI, HTTPException, Depends, Security, Request
+from fastapi.responses import RedirectResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import uuid
+import os
+import httpx
 
 from services.content_service import generate_content_package
 from services.conversation_service import handle_conversation
@@ -24,6 +27,17 @@ app = FastAPI(
     description="API for multimodal AI agent generating social media content packages.",
     version="1.0.0"
 )
+
+# OAuth Config
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+GITHUB_CLIENT_ID = os.environ.get("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
+
+# This should match your frontend URL in production
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+# Backend URL for callbacks
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
 # Standard permissive CORS setup for hackathon project
 app.add_middleware(
@@ -84,6 +98,123 @@ async def login(user_data: UserLogin):
     
     access_token = create_access_token(data={"sub": user["id"]})
     return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "name": user["full_name"]}}
+
+# --- OAUTH ROUTES ---
+
+@app.get("/auth/me")
+async def get_me(user=Depends(get_current_user)):
+    return {"email": user["email"], "name": user["full_name"], "provider": user["provider"]}
+
+@app.get("/auth/github/login")
+async def github_login():
+    github_url = f"https://github.com/login/oauth/authorize?client_id={GITHUB_CLIENT_ID}&scope=read:user user:email"
+    return RedirectResponse(github_url)
+
+@app.get("/auth/github/callback")
+async def github_callback(code: str):
+    async with httpx.AsyncClient() as client:
+        # Exchange code for access token
+        params = {
+            "client_id": GITHUB_CLIENT_ID,
+            "client_secret": GITHUB_CLIENT_SECRET,
+            "code": code
+        }
+        headers = {"Accept": "application/json"}
+        token_res = await client.post("https://github.com/login/oauth/access_token", params=params, headers=headers)
+        token_data = token_res.json()
+        
+        if "access_token" not in token_data:
+            raise HTTPException(status_code=400, detail="Failed to get GitHub access token")
+            
+        access_token = token_data["access_token"]
+        
+        # Get user info
+        headers["Authorization"] = f"token {access_token}"
+        user_res = await client.get("https://api.github.com/user", headers=headers)
+        user_info = user_res.json()
+        
+        # Get user email (GitHub might return empty email if not public)
+        email_res = await client.get("https://api.github.com/user/emails", headers=headers)
+        emails = email_res.json()
+        primary_email = None
+        for e in emails:
+            if e.get("primary") and e.get("verified"):
+                primary_email = e.get("email")
+                break
+        
+        email = primary_email or user_info.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Failed to get email from GitHub")
+            
+        name = user_info.get("name") or user_info.get("login") or "GitHub User"
+        
+        # Find or create user
+        user = get_user_by_email(email)
+        if not user:
+            user_id = str(uuid.uuid4())
+            create_user(user_id, email, None, name, provider='github')
+            user = {"id": user_id, "email": email, "full_name": name}
+        
+        # Generate our own internal JWT
+        internal_token = create_access_token(data={"sub": user["id"]})
+        
+        # Redirect to frontend with token
+        return RedirectResponse(f"{FRONTEND_URL}/#token={internal_token}")
+
+@app.get("/auth/google/login")
+async def google_login():
+    # Construct Google OAuth URL
+    redirect_uri = f"{BACKEND_URL}/auth/google/callback"
+    google_url = (
+        f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}"
+        f"&redirect_uri={redirect_uri}&response_type=code"
+        f"&scope=openid%20email%20profile"
+    )
+    return RedirectResponse(google_url)
+
+@app.get("/auth/google/callback")
+async def google_callback(code: str):
+    async with httpx.AsyncClient() as client:
+        # Exchange code for access token
+        redirect_uri = f"{BACKEND_URL}/auth/google/callback"
+        data = {
+            "client_id": GOOGLE_CLIENT_ID,
+            "client_secret": GOOGLE_CLIENT_SECRET,
+            "code": code,
+            "grant_type": "authorization_code",
+            "redirect_uri": redirect_uri
+        }
+        token_res = await client.post("https://oauth2.googleapis.com/token", data=data)
+        token_data = token_res.json()
+        
+        if "access_token" not in token_data:
+            raise HTTPException(status_code=400, detail="Failed to get Google access token")
+            
+        access_token = token_data["access_token"]
+        
+        # Get user info
+        headers = {"Authorization": f"Bearer {access_token}"}
+        user_res = await client.get("https://www.googleapis.com/oauth2/v3/userinfo", headers=headers)
+        user_info = user_res.json()
+        
+        email = user_info.get("email")
+        if not email:
+            raise HTTPException(status_code=400, detail="Failed to get email from Google")
+            
+        name = user_info.get("name", "Google User")
+        
+        # Find or create user
+        user = get_user_by_email(email)
+        if not user:
+            user_id = str(uuid.uuid4())
+            create_user(user_id, email, None, name, provider='google')
+            user = {"id": user_id, "email": email, "full_name": name}
+        
+        # Generate internal JWT
+        internal_token = create_access_token(data={"sub": user["id"]})
+        
+        # Redirect to frontend
+        return RedirectResponse(f"{FRONTEND_URL}/#token={internal_token}")
 
 @app.get("/")
 def read_root():
