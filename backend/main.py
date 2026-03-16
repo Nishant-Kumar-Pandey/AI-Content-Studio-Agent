@@ -36,10 +36,16 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
-# Standard permissive CORS setup
+# Robust CORS setup
+origins = [
+    FRONTEND_URL,
+    "http://localhost:5173",
+    "https://ai-content-studio-agent.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
