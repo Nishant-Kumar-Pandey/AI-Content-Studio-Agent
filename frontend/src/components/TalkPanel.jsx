@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import VoiceInput from './VoiceInput';
+import { useAuth } from '../context/AuthContext';
 
 const TalkPanel = ({ onGenerate }) => {
+  const { token, logout } = useAuth();
   const [sessionId, setSessionId] = useState(`session_${Date.now()}`);
   const [messages, setMessages] = useState([
     { text: "Hello! I'm your AI Creative Strategist. What topic should we brainstorm today?", isAi: true }
@@ -29,9 +31,12 @@ const TalkPanel = ({ onGenerate }) => {
   // Load history list
   const fetchHistoryList = async () => {
     try {
-      const res = await fetch(`${BASE_CLEAN}/sessions`);
+      const res = await fetch(`${BASE_CLEAN}/sessions`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.status === 401) { logout(); return; }
       if (res.ok) {
-        const data = await res.ok ? await res.json() : [];
+        const data = await res.json();
         setHistory(data);
       }
     } catch (err) {
@@ -52,7 +57,10 @@ const TalkPanel = ({ onGenerate }) => {
   const loadSession = async (sid) => {
     try {
       setIsTyping(true);
-      const res = await fetch(`${BASE_CLEAN}/sessions/${sid}/messages`);
+      const res = await fetch(`${BASE_CLEAN}/sessions/${sid}/messages`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.status === 401) { logout(); return; }
       if (res.ok) {
         const data = await res.json();
         if (data.length > 0) {
@@ -80,9 +88,14 @@ const TalkPanel = ({ onGenerate }) => {
     try {
       const response = await fetch(TALK_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ message: messageText, session_id: sessionId }),
       });
+
+      if (response.status === 401) { logout(); return; }
 
       if (response.status === 429) {
         setMessages([...newMessages, { 
