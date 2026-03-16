@@ -4,6 +4,7 @@ import InputPanel from './components/InputPanel';
 import OutputCard from './components/OutputCard';
 import Loader from './components/Loader';
 import TalkPanel from './components/TalkPanel';
+import TrendingPanel from './components/TrendingPanel';
 import './index.css';
 
 // Using Vite env variables or fallback to local
@@ -101,6 +102,12 @@ function App() {
         >
           Talk Mode 🗣️
         </button>
+        <button 
+          className={`toggle-btn ${activeTab === 'trending' ? 'active' : ''}`}
+          onClick={() => setActiveTab('trending')}
+        >
+          Trending Topics 🔥
+        </button>
       </div>
 
       <main>
@@ -137,8 +144,10 @@ function App() {
               </div>
             )}
           </>
-        ) : (
+        ) : activeTab === 'talk' ? (
           <TalkPanel onGenerate={handleGenerate} />
+        ) : (
+          <TrendingPanel onTopicSelect={handleGenerate} />
         )}
       </main>
     </div>

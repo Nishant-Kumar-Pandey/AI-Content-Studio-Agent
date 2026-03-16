@@ -89,6 +89,15 @@ async def login(user_data: UserLogin):
 def read_root():
     return {"status": "ok", "message": "AI Content Studio API is running. Send POST to /generate"}
 
+@app.get("/trending")
+def get_trending_topics(user=Depends(get_current_user)):
+    return [
+        {"topic": "AI in Healthcare", "growth": "+120%", "description": "Analyzing how AI agents are transforming clinical workflows."},
+        {"topic": "Sustainable Tech", "growth": "+85%", "description": "The rise of eco-friendly data centers and AI hardware."},
+        {"topic": "Web3 Strategy", "growth": "+45%", "description": "Future of creator economy in the decentralized web."},
+        {"topic": "Multimodal AI", "growth": "+210%", "description": "Best practices for generating cross-platform content packages."}
+    ]
+
 @app.get("/sessions")
 def list_sessions(user=Depends(get_current_user)):
     return get_sessions(user["id"])
