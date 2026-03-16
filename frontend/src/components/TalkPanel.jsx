@@ -13,8 +13,10 @@ const TalkPanel = ({ onGenerate }) => {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
+  // Robustly handle trailing slash
   const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
-  const TALK_URL = `${API_BASE}/talk`;
+  const BASE_CLEAN = API_BASE.endsWith('/') ? API_BASE.slice(0, -1) : API_BASE;
+  const TALK_URL = `${BASE_CLEAN}/talk`;
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -27,7 +29,7 @@ const TalkPanel = ({ onGenerate }) => {
   // Load history list
   const fetchHistoryList = async () => {
     try {
-      const res = await fetch(`${API_BASE}/sessions`);
+      const res = await fetch(`${BASE_CLEAN}/sessions`);
       if (res.ok) {
         const data = await res.ok ? await res.json() : [];
         setHistory(data);
@@ -50,7 +52,7 @@ const TalkPanel = ({ onGenerate }) => {
   const loadSession = async (sid) => {
     try {
       setIsTyping(true);
-      const res = await fetch(`${API_BASE}/sessions/${sid}/messages`);
+      const res = await fetch(`${BASE_CLEAN}/sessions/${sid}/messages`);
       if (res.ok) {
         const data = await res.json();
         if (data.length > 0) {
