@@ -6,7 +6,8 @@ import TalkPanel from './components/TalkPanel';
 import './index.css';
 
 // Using Vite env variables or fallback to local
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/generate";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const GENERATE_URL = `${API_BASE}/generate`;
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +22,7 @@ function App() {
     setActiveTab('studio'); // Switch to studio view to show results
     
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(GENERATE_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
