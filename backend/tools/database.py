@@ -6,6 +6,7 @@ from services.auth_service import encrypt_data, decrypt_data
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "studio.db")
 
 def get_db_connection():
+    # print(f"DEBUG: Connecting to database at {DB_PATH}")
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn

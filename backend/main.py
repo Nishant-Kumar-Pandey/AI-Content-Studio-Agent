@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 import uuid
 import os
 import httpx
+import traceback
+import logging
 
 from services.content_service import generate_content_package
 from services.conversation_service import handle_conversation
@@ -36,11 +38,24 @@ GITHUB_CLIENT_SECRET = os.environ.get("GITHUB_CLIENT_SECRET")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8080")
 
+# Handle logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Global Exception Handler for 500 errors
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error("GLOBAL EXCEPTION CAUGHT")
+    logger.error(f"Request: {request.method} {request.url}")
+    logger.error(traceback.format_exc())
+    return {"detail": "Internal Server Error", "traceback": str(exc)}
+
 # Robust CORS setup
 origins = [
     FRONTEND_URL,
     "http://localhost:5173",
     "https://ai-content-studio-agent.vercel.app",
+    "https://ai-content-studio-ag.vercel.app", # Corrected Vercel origin
 ]
 
 app.add_middleware(
@@ -90,25 +105,36 @@ def read_root():
 
 @app.post("/auth/register")
 async def register(user_data: UserRegister):
-    existing = get_user_by_email(user_data.email)
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    
-    user_id = str(uuid.uuid4())
-    hashed = hash_password(user_data.password)
-    create_user(user_id, user_data.email, hashed, user_data.full_name)
-    
-    access_token = create_access_token(data={"sub": user_id})
-    return {"access_token": access_token, "token_type": "bearer", "user": {"email": user_data.email, "name": user_data.full_name}}
+    try:
+        logger.info(f"Registering user: {user_data.email}")
+        existing = get_user_by_email(user_data.email)
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        
+        user_id = str(uuid.uuid4())
+        hashed = hash_password(user_data.password)
+        create_user(user_id, user_data.email, hashed, user_data.full_name)
+        
+        access_token = create_access_token(data={"sub": user_id})
+        return {"access_token": access_token, "token_type": "bearer", "user": {"email": user_data.email, "name": user_data.full_name}}
+    except Exception as e:
+        logger.error(f"Error in /auth/register: {e}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Registration failed: {str(e)}")
 
 @app.post("/auth/login")
 async def login(user_data: UserLogin):
-    user = get_user_by_email(user_data.email)
-    if not user or not user["hashed_password"] or not verify_password(user_data.password, user["hashed_password"]):
-        raise HTTPException(status_code=401, detail="Incorrect email or password")
-    
-    access_token = create_access_token(data={"sub": user["id"]})
-    return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "name": user["full_name"]}}
+    try:
+        user = get_user_by_email(user_data.email)
+        if not user or not user["hashed_password"] or not verify_password(user_data.password, user["hashed_password"]):
+            raise HTTPException(status_code=401, detail="Incorrect email or password")
+        
+        access_token = create_access_token(data={"sub": user["id"]})
+        return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "name": user["full_name"]}}
+    except Exception as e:
+        logger.error(f"Error in /auth/login: {e}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Login failed: {str(e)}")
 
 @app.get("/auth/me")
 async def get_me(user=Depends(get_current_user)):
