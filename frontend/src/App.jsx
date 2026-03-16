@@ -1,4 +1,4 @@
-/* VERSION: 1.0.2 - API FIX */
+/* LIVE_FIX_VERSION: 1.0.3_FINAL */
 import { useState } from 'react';
 import InputPanel from './components/InputPanel';
 import OutputCard from './components/OutputCard';
