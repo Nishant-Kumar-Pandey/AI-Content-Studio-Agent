@@ -355,10 +355,49 @@ p.subtitle {
   background: rgba(255, 255, 255, 0.02);
 }
 
-.talk-title {
-  font-weight: 600;
+.talk-persona {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.persona-avatar {
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.2);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.persona-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.persona-name {
+  font-weight: 700;
   font-size: 1.1rem;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.persona-status {
+  font-size: 0.75rem;
   color: var(--accent-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .talk-actions {

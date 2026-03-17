@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const VoiceInput = ({ onTranscript }) => {
+const VoiceInput = ({ onTranscript, onStart }) => {
   const [isListening, setIsListening] = useState(false);
 
   const handleToggleListen = () => {
@@ -16,7 +16,10 @@ const VoiceInput = ({ onTranscript }) => {
     recognition.interimResults = false;
     recognition.lang = 'en-US';
 
-    recognition.onstart = () => setIsListening(true);
+    recognition.onstart = () => {
+      setIsListening(true);
+      if (onStart) onStart();
+    };
     recognition.onend = () => setIsListening(false);
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;

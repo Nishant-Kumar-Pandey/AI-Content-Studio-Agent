@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ChatMessage from './ChatMessage';
 import VoiceInput from './VoiceInput';
 import { useAuth } from '../context/AuthContext';
+import { audioService } from '../services/audio_service';
 
 const TalkPanel = ({ onGenerate }) => {
   const { token, logout } = useAuth();
@@ -109,6 +110,7 @@ const TalkPanel = ({ onGenerate }) => {
 
       const data = await response.json();
       setMessages([...newMessages, { text: data.reply, isAi: true }]);
+      audioService.speak(data.reply); // Nova speaks!
       fetchHistoryList(); // Refresh list after reply
     } catch (err) {
       console.error(err);
@@ -121,9 +123,15 @@ const TalkPanel = ({ onGenerate }) => {
   return (
     <div className="talk-panel glass-panel">
       <div className="talk-header">
-        <div className="talk-title">Creative Strategist</div>
+        <div className="talk-persona">
+            <div className="persona-avatar">✨</div>
+            <div className="persona-info">
+                <div className="persona-name">Nova</div>
+                <div className="persona-status">Growth Strategist</div>
+            </div>
+        </div>
         <div className="talk-actions">
-          <button className="icon-btn" title="New Chat" onClick={startNewChat}>+</button>
+          <button className="icon-btn" title="New Chat" onClick={() => { audioService.stop(); startNewChat(); }}>+</button>
           <button className="icon-btn" title="History" onClick={() => { setShowHistory(!showHistory); fetchHistoryList(); }}>🕒</button>
         </div>
       </div>
@@ -159,13 +167,13 @@ const TalkPanel = ({ onGenerate }) => {
       )}
 
       <div className="chat-input-area">
-        <VoiceInput onTranscript={(text) => handleSend(text)} />
+        <VoiceInput onTranscript={(text) => handleSend(text)} onStart={() => audioService.stop()} />
         <input
           type="text"
           className="chat-input"
           placeholder="Type your message..."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => { setInput(e.target.value); audioService.stop(); }}
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
         />
         <button className="send-btn" onClick={() => handleSend()}>
