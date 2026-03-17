@@ -79,20 +79,20 @@ origins = [
     "https://ai-content-studio-agent-git-main-nishant-kumar-pandeys-projects.vercel.app",
 ]
 
-logger.info(f"--- API CONFIGURATION ---")
-logger.info(f"FRONTEND_URL: {FRONTEND_URL}")
-logger.info(f"BACKEND_URL: {BACKEND_URL}")
-logger.info(f"CORS ORIGINS: {origins}")
-logger.info(f"-------------------------")
-
+# Move CORS to top and use broad origins for debugging redeployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=["*"], # Temporarily wildcard to fix user's blocking issue immediately
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+logger.info(f"--- API CONFIGURATION ---")
+logger.info(f"FRONTEND_URL: {FRONTEND_URL}")
+logger.info(f"BACKEND_URL: {BACKEND_URL}")
+logger.info(f"CORS ORIGINS: {origins} (Middleware using '*')")
+logger.info(f"-------------------------")
 
 security = HTTPBearer()
 
