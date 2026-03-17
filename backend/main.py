@@ -73,8 +73,10 @@ async def log_requests(request: Request, call_next):
 origins = [
     FRONTEND_URL,
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://ai-content-studio-agent.vercel.app",
     "https://ai-content-studio-ag.vercel.app",
+    "https://ai-content-studio-agent-git-main-nishant-kumar-pandeys-projects.vercel.app",
 ]
 
 logger.info(f"--- API CONFIGURATION ---")
@@ -86,6 +88,7 @@ logger.info(f"-------------------------")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
