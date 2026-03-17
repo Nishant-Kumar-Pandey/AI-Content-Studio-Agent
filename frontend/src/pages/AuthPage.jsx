@@ -30,7 +30,11 @@ const AuthPage = () => {
         body: JSON.stringify(payload)
       });
 
-      const data = await res.json();
+      if (res.status === 500) {
+        throw new Error("Server Error (500): The backend is currently unable to process your request. Please ensure you have redeployed the latest fixes to Render.");
+      }
+
+      const data = await res.json().catch(() => ({ detail: 'Authentication failed (could not parse response)' }));
       if (!res.ok) throw new Error(data.detail || 'Authentication failed');
 
       saveAuth(data.access_token, data.user);
