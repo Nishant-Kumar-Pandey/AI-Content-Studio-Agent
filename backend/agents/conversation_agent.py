@@ -7,12 +7,12 @@ class ConversationAgent:
         self.gemini = get_client()
         self.sessions = {} # Cache for active chat sessions {session_id: chat_session}
 
-    def _get_or_create_session(self, session_id: str):
+    def _get_or_create_session(self, session_id: str, user_id: str):
         if session_id in self.sessions:
             return self.sessions[session_id]
         
         # Load history from DB to populate initial context
-        history = get_messages(session_id)
+        history = get_messages(session_id, user_id)
         formatted_history = []
         for msg in history:
             role = "model" if msg["is_ai"] else "user"
@@ -28,12 +28,12 @@ class ConversationAgent:
         self.sessions[session_id] = chat_session
         return chat_session
 
-    def chat(self, message: str, session_id: str = "default") -> str:
+    def chat(self, message: str, user_id: str, session_id: str = "default") -> str:
         """
         Sends a message to Gemini and returns the conversational response.
         """
         try:
-            chat_session = self._get_or_create_session(session_id)
+            chat_session = self._get_or_create_session(session_id, user_id)
             response = chat_session.send_message(message)
             return response.text.strip()
         except Exception as e:

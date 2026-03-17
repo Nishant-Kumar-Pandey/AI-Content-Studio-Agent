@@ -15,7 +15,7 @@ def handle_conversation(message: str, user_id: str, session_id: str = "default")
     save_message(session_id, message, is_ai=False)
     
     agent = get_conversation_agent()
-    reply = agent.chat(message, session_id)
+    reply = agent.chat(message, user_id, session_id)
     
     # Save AI response
     save_message(session_id, reply, is_ai=True)
