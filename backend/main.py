@@ -77,6 +77,12 @@ origins = [
     "https://ai-content-studio-ag.vercel.app",
 ]
 
+logger.info(f"--- API CONFIGURATION ---")
+logger.info(f"FRONTEND_URL: {FRONTEND_URL}")
+logger.info(f"BACKEND_URL: {BACKEND_URL}")
+logger.info(f"CORS ORIGINS: {origins}")
+logger.info(f"-------------------------")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
