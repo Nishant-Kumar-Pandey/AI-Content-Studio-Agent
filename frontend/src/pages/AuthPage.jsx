@@ -31,7 +31,9 @@ const AuthPage = () => {
       });
 
       if (res.status === 500) {
-        throw new Error("Server Error (500): The backend is currently unable to process your request. Please ensure you have redeployed the latest fixes to Render.");
+        const serverError = await res.json().catch(() => ({}));
+        const errorDetail = serverError.traceback || serverError.detail || "No details provided";
+        throw new Error(`Server Error (500): ${errorDetail}. Please ensure you have pushed latest changes and redeployed to Render.`);
       }
 
       const data = await res.json().catch(() => ({ detail: 'Authentication failed (could not parse response)' }));

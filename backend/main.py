@@ -149,6 +149,29 @@ async def diagnostics():
         "cors_origins": origins
     }
 
+@app.get("/debug")
+def debug_info():
+    import pkg_resources
+    import sqlite3
+    
+    db_exists = os.path.exists(DB_PATH)
+    bcrypt_version = "Not installed"
+    try:
+        bcrypt_version = pkg_resources.get_distribution("bcrypt").version
+    except:
+        pass
+        
+    return {
+        "db_path": DB_PATH,
+        "db_exists": db_exists,
+        "bcrypt_version": bcrypt_version,
+        "python_version": sys.version,
+        "env": {
+            "FRONTEND_URL": FRONTEND_URL,
+            "BACKEND_URL": BACKEND_URL,
+        }
+    }
+
 @app.get("/")
 def read_root():
     return {"status": "ok", "message": "AI Content Studio API is running.", "version": "1.1.0"}
