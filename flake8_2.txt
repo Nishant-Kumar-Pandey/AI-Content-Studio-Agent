@@ -1,0 +1,57 @@
+﻿backend\agents\conversation_agent.py:9:80: E501 line too long (87 > 79 characters)
+backend\agents\conversation_agent.py:45:80: E501 line too long (188 > 79 characters)
+backend\agents\conversation_agent.py:48:20: F541 f-string is missing placeholders
+backend\agents\planner_agent.py:9:80: E501 line too long (107 > 79 characters)
+backend\agents\planner_agent.py:12:80: E501 line too long (86 > 79 characters)
+backend\agents\planner_agent.py:14:80: E501 line too long (87 > 79 characters)
+backend\create_test_user.py:33:11: F541 f-string is missing placeholders
+backend\create_test_user.py:40:15: F541 f-string is missing placeholders
+backend\create_test_user.py:42:15: F541 f-string is missing placeholders
+backend\create_test_user.py:48:11: F541 f-string is missing placeholders
+backend\main.py:10:1: F401 'datetime.timedelta' imported but unused
+backend\main.py:38:80: E501 line too long (88 > 79 characters)
+backend\main.py:69:80: E501 line too long (88 > 79 characters)
+backend\main.py:86:80: E501 line too long (89 > 79 characters)
+backend\main.py:99:13: F541 f-string is missing placeholders
+backend\main.py:103:13: F541 f-string is missing placeholders
+backend\main.py:173:5: F401 'sqlite3' imported but unused
+backend\main.py:175:32: F821 undefined name 'DB_PATH'
+backend\main.py:183:20: F821 undefined name 'DB_PATH'
+backend\main.py:267:80: E501 line too long (118 > 79 characters)
+backend\main.py:279:80: E501 line too long (116 > 79 characters)
+backend\main.py:288:80: E501 line too long (83 > 79 characters)
+backend\main.py:291:80: E501 line too long (91 > 79 characters)
+backend\main.py:316:80: E501 line too long (84 > 79 characters)
+backend\main.py:333:80: E501 line too long (87 > 79 characters)
+backend\main.py:342:80: E501 line too long (101 > 79 characters)
+backend\main.py:367:80: E501 line too long (92 > 79 characters)
+backend\main.py:370:80: E501 line too long (86 > 79 characters)
+backend\main.py:373:80: E501 line too long (83 > 79 characters)
+backend\main.py:376:80: E501 line too long (94 > 79 characters)
+backend\services\auth_service.py:2:1: F401 'secrets' imported but unused
+backend\services\auth_service.py:42:80: E501 line too long (83 > 79 characters)
+backend\services\content_service.py:6:80: E501 line too long (110 > 79 characters)
+backend\services\conversation_service.py:10:80: E501 line too long (91 > 79 characters)
+backend\tools\database.py:3:1: F401 'datetime.datetime' imported but unused
+backend\tools\database.py:48:80: E501 line too long (80 > 79 characters)
+backend\tools\database.py:108:80: E501 line too long (88 > 79 characters)
+backend\tools\database.py:125:80: E501 line too long (91 > 79 characters)
+backend\tools\database.py:160:80: E501 line too long (101 > 79 characters)
+backend\tools\gemini_client.py:13:80: E501 line too long (95 > 79 characters)
+backend\tools\gemini_client.py:31:80: E501 line too long (104 > 79 characters)
+backend\tools\prompts.py:9:80: E501 line too long (104 > 79 characters)
+backend\tools\prompts.py:15:80: E501 line too long (105 > 79 characters)
+backend\tools\prompts.py:21:80: E501 line too long (141 > 79 characters)
+backend\tools\prompts.py:32:80: E501 line too long (112 > 79 characters)
+backend\tools\prompts.py:37:80: E501 line too long (149 > 79 characters)
+backend\tools\prompts.py:41:80: E501 line too long (99 > 79 characters)
+backend\tools\prompts.py:42:80: E501 line too long (99 > 79 characters)
+backend\tools\prompts.py:43:80: E501 line too long (86 > 79 characters)
+backend\tools\prompts.py:46:80: E501 line too long (83 > 79 characters)
+backend\tools\prompts.py:47:80: E501 line too long (183 > 79 characters)
+backend\tools\prompts.py:48:80: E501 line too long (141 > 79 characters)
+backend\tools\prompts.py:49:80: E501 line too long (103 > 79 characters)
+backend\tools\prompts.py:54:80: E501 line too long (118 > 79 characters)
+backend\tools\prompts.py:57:80: E501 line too long (167 > 79 characters)
+backend\tools\prompts.py:60:80: E501 line too long (82 > 79 characters)
+backend\tools\prompts.py:62:80: E501 line too long (82 > 79 characters)

@@ -1,0 +1,195 @@
+﻿backend\agents\caption_agent.py:4:1: E302 expected 2 blank lines, found 1
+backend\agents\conversation_agent.py:5:1: E302 expected 2 blank lines, found 1
+backend\agents\conversation_agent.py:8:27: E261 at least two spaces before inline comment
+backend\agents\conversation_agent.py:8:80: E501 line too long (86 > 79 characters)
+backend\agents\conversation_agent.py:13:1: W293 blank line contains whitespace
+backend\agents\conversation_agent.py:19:80: E501 line too long (89 > 79 characters)
+backend\agents\conversation_agent.py:20:1: W293 blank line contains whitespace
+backend\agents\conversation_agent.py:27:1: W293 blank line contains whitespace
+backend\agents\conversation_agent.py:31:80: E501 line too long (83 > 79 characters)
+backend\agents\conversation_agent.py:42:80: E501 line too long (188 > 79 characters)
+backend\agents\conversation_agent.py:43:1: W293 blank line contains whitespace
+backend\agents\conversation_agent.py:45:20: F541 f-string is missing placeholders
+backend\agents\conversation_agent.py:48:1: E305 expected 2 blank lines after class or function definition, found 1
+backend\agents\conversation_agent.py:50:1: E302 expected 2 blank lines, found 1
+backend\agents\hashtag_agent.py:4:1: E302 expected 2 blank lines, found 1
+backend\agents\planner_agent.py:6:1: E302 expected 2 blank lines, found 1
+backend\agents\planner_agent.py:8:80: E501 line too long (107 > 79 characters)
+backend\agents\planner_agent.py:10:80: E501 line too long (88 > 79 characters)
+backend\agents\planner_agent.py:11:1: W293 blank line contains whitespace
+backend\agents\planner_agent.py:12:80: E501 line too long (87 > 79 characters)
+backend\agents\planner_agent.py:12:88: W291 trailing whitespace
+backend\agents\planner_agent.py:14:1: W293 blank line contains whitespace
+backend\agents\planner_agent.py:19:1: W293 blank line contains whitespace
+backend\agents\planner_agent.py:21:1: W293 blank line contains whitespace
+backend\agents\script_agent.py:4:1: E302 expected 2 blank lines, found 1
+backend\agents\thumbnail_agent.py:4:1: E302 expected 2 blank lines, found 1
+backend\create_test_user.py:17:80: E501 line too long (87 > 79 characters)
+backend\create_test_user.py:20:1: E402 module level import not at top of file
+backend\create_test_user.py:22:1: E402 module level import not at top of file
+backend\create_test_user.py:23:1: E402 module level import not at top of file
+backend\create_test_user.py:32:11: F541 f-string is missing placeholders
+backend\create_test_user.py:37:80: E501 line too long (99 > 79 characters)
+backend\create_test_user.py:38:15: F541 f-string is missing placeholders
+backend\create_test_user.py:40:15: F541 f-string is missing placeholders
+backend\create_test_user.py:46:11: F541 f-string is missing placeholders
+backend\main.py:1:1: F401 'datetime.timedelta' imported but unused
+backend\main.py:23:1: E402 module level import not at top of file
+backend\main.py:24:1: E402 module level import not at top of file
+backend\main.py:25:1: E402 module level import not at top of file
+backend\main.py:28:1: E402 module level import not at top of file
+backend\main.py:29:51: W291 trailing whitespace
+backend\main.py:38:80: E501 line too long (88 > 79 characters)
+backend\main.py:51:1: E302 expected 2 blank lines, found 1
+backend\main.py:59:1: E302 expected 2 blank lines, found 1
+backend\main.py:65:80: E501 line too long (96 > 79 characters)
+backend\main.py:68:80: E501 line too long (80 > 79 characters)
+backend\main.py:79:80: E501 line too long (89 > 79 characters)
+backend\main.py:85:25: E261 at least two spaces before inline comment
+backend\main.py:85:80: E501 line too long (88 > 79 characters)
+backend\main.py:91:13: F541 f-string is missing placeholders
+backend\main.py:95:13: F541 f-string is missing placeholders
+backend\main.py:100:1: E302 expected 2 blank lines, found 1
+backend\main.py:105:1: E302 expected 2 blank lines, found 1
+backend\main.py:109:1: E302 expected 2 blank lines, found 1
+backend\main.py:112:1: E302 expected 2 blank lines, found 1
+backend\main.py:117:1: E302 expected 2 blank lines, found 1
+backend\main.py:117:80: E501 line too long (91 > 79 characters)
+backend\main.py:122:1: W293 blank line contains whitespace
+backend\main.py:130:1: E302 expected 2 blank lines, found 1
+backend\main.py:152:1: E302 expected 2 blank lines, found 1
+backend\main.py:155:5: F401 'sqlite3' imported but unused
+backend\main.py:156:1: W293 blank line contains whitespace
+backend\main.py:157:32: F821 undefined name 'DB_PATH'
+backend\main.py:161:5: E722 do not use bare 'except'
+backend\main.py:163:1: W293 blank line contains whitespace
+backend\main.py:165:20: F821 undefined name 'DB_PATH'
+backend\main.py:175:1: E302 expected 2 blank lines, found 1
+backend\main.py:177:80: E501 line too long (95 > 79 characters)
+backend\main.py:179:1: E302 expected 2 blank lines, found 1
+backend\main.py:185:80: E501 line too long (83 > 79 characters)
+backend\main.py:186:1: W293 blank line contains whitespace
+backend\main.py:190:1: W293 blank line contains whitespace
+backend\main.py:192:80: E501 line too long (134 > 79 characters)
+backend\main.py:196:80: E501 line too long (85 > 79 characters)
+backend\main.py:198:1: E302 expected 2 blank lines, found 1
+backend\main.py:202:80: E501 line too long (119 > 79 characters)
+backend\main.py:203:80: E501 line too long (86 > 79 characters)
+backend\main.py:204:1: W293 blank line contains whitespace
+backend\main.py:206:80: E501 line too long (130 > 79 characters)
+backend\main.py:212:1: E302 expected 2 blank lines, found 1
+backend\main.py:214:80: E501 line too long (92 > 79 characters)
+backend\main.py:218:1: E302 expected 2 blank lines, found 1
+backend\main.py:220:80: E501 line too long (118 > 79 characters)
+backend\main.py:223:1: E302 expected 2 blank lines, found 1
+backend\main.py:226:80: E501 line too long (101 > 79 characters)
+backend\main.py:228:80: E501 line too long (116 > 79 characters)
+backend\main.py:230:1: W293 blank line contains whitespace
+backend\main.py:232:80: E501 line too long (92 > 79 characters)
+backend\main.py:233:1: W293 blank line contains whitespace
+backend\main.py:236:80: E501 line too long (83 > 79 characters)
+backend\main.py:238:1: W293 blank line contains whitespace
+backend\main.py:239:80: E501 line too long (91 > 79 characters)
+backend\main.py:241:80: E501 line too long (110 > 79 characters)
+backend\main.py:242:1: W293 blank line contains whitespace
+backend\main.py:245:80: E501 line too long (90 > 79 characters)
+backend\main.py:246:1: W293 blank line contains whitespace
+backend\main.py:253:1: W293 blank line contains whitespace
+backend\main.py:257:1: E302 expected 2 blank lines, found 1
+backend\main.py:261:80: E501 line too long (84 > 79 characters)
+backend\main.py:267:1: E302 expected 2 blank lines, found 1
+backend\main.py:272:80: E501 line too long (81 > 79 characters)
+backend\main.py:273:80: E501 line too long (90 > 79 characters)
+backend\main.py:275:80: E501 line too long (87 > 79 characters)
+backend\main.py:277:1: W293 blank line contains whitespace
+backend\main.py:279:80: E501 line too long (92 > 79 characters)
+backend\main.py:280:1: W293 blank line contains whitespace
+backend\main.py:283:80: E501 line too long (101 > 79 characters)
+backend\main.py:285:1: W293 blank line contains whitespace
+backend\main.py:288:80: E501 line too long (90 > 79 characters)
+backend\main.py:289:1: W293 blank line contains whitespace
+backend\main.py:296:1: W293 blank line contains whitespace
+backend\main.py:302:1: E302 expected 2 blank lines, found 1
+backend\main.py:305:80: E501 line too long (136 > 79 characters)
+backend\main.py:306:80: E501 line too long (129 > 79 characters)
+backend\main.py:307:80: E501 line too long (123 > 79 characters)
+backend\main.py:308:80: E501 line too long (134 > 79 characters)
+backend\main.py:311:1: E302 expected 2 blank lines, found 1
+backend\main.py:315:1: E302 expected 2 blank lines, found 1
+backend\main.py:319:1: E302 expected 2 blank lines, found 1
+backend\main.py:320:80: E501 line too long (86 > 79 characters)
+backend\main.py:329:1: E302 expected 2 blank lines, found 1
+backend\main.py:334:80: E501 line too long (83 > 79 characters)
+backend\services\auth_service.py:2:1: F401 'secrets' imported but unused
+backend\services\auth_service.py:15:42: E261 at least two spaces before inline comment
+backend\services\auth_service.py:28:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:31:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:34:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:39:80: E501 line too long (83 > 79 characters)
+backend\services\auth_service.py:44:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:54:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:55:16: E701 multiple statements on one line (colon)
+backend\services\auth_service.py:58:1: E302 expected 2 blank lines, found 1
+backend\services\auth_service.py:59:17: E701 multiple statements on one line (colon)
+backend\services\content_service.py:3:1: E302 expected 2 blank lines, found 1
+backend\services\content_service.py:5:80: E501 line too long (110 > 79 characters)
+backend\services\content_service.py:9:1: W293 blank line contains whitespace
+backend\services\content_service.py:10:80: E501 line too long (81 > 79 characters)
+backend\services\content_service.py:13:1: W293 blank line contains whitespace
+backend\services\conversation_service.py:4:1: E302 expected 2 blank lines, found 1
+backend\services\conversation_service.py:4:80: E501 line too long (89 > 79 characters)
+backend\services\conversation_service.py:6:80: E501 line too long (91 > 79 characters)
+backend\services\conversation_service.py:10:1: W293 blank line contains whitespace
+backend\services\conversation_service.py:13:1: W293 blank line contains whitespace
+backend\services\conversation_service.py:16:1: W293 blank line contains whitespace
+backend\services\conversation_service.py:19:1: W293 blank line contains whitespace
+backend\services\conversation_service.py:22:1: W293 blank line contains whitespace
+backend\tools\database.py:3:1: F401 'datetime.datetime' imported but unused
+backend\tools\database.py:8:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:14:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:17:1: W293 blank line contains whitespace
+backend\tools\database.py:29:1: W293 blank line contains whitespace
+backend\tools\database.py:45:80: E501 line too long (91 > 79 characters)
+backend\tools\database.py:46:1: W293 blank line contains whitespace
+backend\tools\database.py:58:1: W293 blank line contains whitespace
+backend\tools\database.py:62:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:66:80: E501 line too long (114 > 79 characters)
+backend\tools\database.py:69:13: E261 at least two spaces before inline comment
+backend\tools\database.py:73:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:76:80: E501 line too long (85 > 79 characters)
+backend\tools\database.py:80:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:92:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:95:80: E501 line too long (99 > 79 characters)
+backend\tools\database.py:100:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:111:80: E501 line too long (91 > 79 characters)
+backend\tools\database.py:123:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:131:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:139:1: E302 expected 2 blank lines, found 1
+backend\tools\database.py:143:80: E501 line too long (101 > 79 characters)
+backend\tools\database.py:150:1: E305 expected 2 blank lines after class or function definition, found 1
+backend\tools\gemini_client.py:7:1: E302 expected 2 blank lines, found 1
+backend\tools\gemini_client.py:11:80: E501 line too long (108 > 79 characters)
+backend\tools\gemini_client.py:12:1: W293 blank line contains whitespace
+backend\tools\gemini_client.py:29:80: E501 line too long (104 > 79 characters)
+backend\tools\gemini_client.py:30:1: W293 blank line contains whitespace
+backend\tools\gemini_client.py:35:1: E305 expected 2 blank lines after class or function definition, found 1
+backend\tools\gemini_client.py:37:1: E302 expected 2 blank lines, found 1
+backend\tools\gemini_client.py:43:1: E302 expected 2 blank lines, found 1
+backend\tools\prompts.py:9:80: E501 line too long (104 > 79 characters)
+backend\tools\prompts.py:15:80: E501 line too long (105 > 79 characters)
+backend\tools\prompts.py:21:80: E501 line too long (141 > 79 characters)
+backend\tools\prompts.py:32:80: E501 line too long (112 > 79 characters)
+backend\tools\prompts.py:36:80: W291 trailing whitespace
+backend\tools\prompts.py:37:80: E501 line too long (149 > 79 characters)
+backend\tools\prompts.py:41:80: E501 line too long (99 > 79 characters)
+backend\tools\prompts.py:42:80: E501 line too long (99 > 79 characters)
+backend\tools\prompts.py:43:80: E501 line too long (86 > 79 characters)
+backend\tools\prompts.py:46:80: E501 line too long (83 > 79 characters)
+backend\tools\prompts.py:47:80: E501 line too long (183 > 79 characters)
+backend\tools\prompts.py:48:80: E501 line too long (141 > 79 characters)
+backend\tools\prompts.py:49:80: E501 line too long (103 > 79 characters)
+backend\tools\prompts.py:54:80: E501 line too long (118 > 79 characters)
+backend\tools\prompts.py:57:80: E501 line too long (167 > 79 characters)
+backend\tools\prompts.py:57:168: W291 trailing whitespace
+backend\tools\prompts.py:60:80: E501 line too long (82 > 79 characters)
+backend\tools\prompts.py:62:80: E501 line too long (82 > 79 characters)

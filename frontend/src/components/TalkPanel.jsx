@@ -47,6 +47,7 @@ const TalkPanel = ({ onGenerate }) => {
 
   useEffect(() => {
     fetchHistoryList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const startNewChat = () => {

@@ -10,8 +10,8 @@ Test credentials:
 import sys
 import os
 
-# Add the backend directory to the Python path to resolve imports
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# Add the project root to the Python path to resolve backend.* imports
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Set required env vars before importing app modules
 os.environ.setdefault('ENCRYPTION_KEY', 'lY-vX9yD-qPq9R5VwK1o9D9W3X4S6Z7Y8B9C0D1E2F3=')
@@ -19,8 +19,8 @@ os.environ.setdefault('SECRET_KEY', 'super-secret-auth-key-for-content-studio')
 
 import uuid
 
-from services.auth_service import hash_password, verify_password
-from tools.database import get_user_by_email, create_user
+from backend.services.auth_service import hash_password, verify_password
+from backend.tools.database import get_user_by_email, create_user
 
 TEST_EMAIL = 'tester@studio.com'
 TEST_PASS = 'Test1234!'

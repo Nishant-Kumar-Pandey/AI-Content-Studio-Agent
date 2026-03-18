@@ -1,7 +1,7 @@
-from agents.script_agent import generate_script
-from agents.thumbnail_agent import generate_thumbnail
-from agents.caption_agent import generate_caption
-from agents.hashtag_agent import generate_hashtags
+from .script_agent import generate_script
+from .thumbnail_agent import generate_thumbnail
+from .caption_agent import generate_caption
+from .hashtag_agent import generate_hashtags
 
 def create_content_plan(topic: str) -> dict:
     """

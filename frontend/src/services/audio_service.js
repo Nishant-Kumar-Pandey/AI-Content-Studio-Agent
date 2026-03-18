@@ -23,7 +23,7 @@ class AudioService {
     this.stop(); // Stop any current speech
     
     // Clean markdown for speech
-    const cleanText = text.replace(/[*#_\[\]()]/g, '').replace(/https?:\/\/\S+/g, '');
+    const cleanText = text.replace(/[*#_[\]()]/g, '').replace(/https?:\/\/\S+/g, '');
 
     this.utterance = new SpeechSynthesisUtterance(cleanText);
     

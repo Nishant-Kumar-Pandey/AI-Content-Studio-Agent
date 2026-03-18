@@ -2,6 +2,7 @@ from tools.gemini_client import get_client
 from tools.prompts import TALK_SYSTEM_PROMPT
 from tools.database import get_messages
 
+
 class ConversationAgent:
     def __init__(self):
         self.gemini = get_client()
@@ -39,10 +40,14 @@ class ConversationAgent:
         except Exception as e:
             error_str = str(e)
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
-                return "🚨 API Quota Reached! You've hit the daily free limit for the AI. Please try again tomorrow, or link a billing account to your Google Cloud project for more tokens."
+                return (
+                    "🚨 API Quota Reached! You've hit the daily free limit for the "
+                    "AI. Please try again tomorrow, or link a billing account to "
+                    "your Google Cloud project for more tokens."
+                )
             
             print(f"Error in ConversationAgent for session {session_id}: {e}")
-            return f"I'm sorry, I'm having trouble connecting right now."
+            return "I'm sorry, I'm having trouble connecting right now."
 
 # Singleton for the demo
 _agent = None

@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add current directory to path to resolve absolute imports within the backend
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from datetime import timedelta
 from fastapi import FastAPI, HTTPException, Depends, Security, Request
 from fastapi.responses import RedirectResponse
@@ -6,11 +12,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import uuid
-import os
 import httpx
 import traceback
 import logging
-import sys
 
 # Explicit logging to stdout for Render
 logging.basicConfig(
