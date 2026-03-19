@@ -156,18 +156,19 @@ async def diagnostics():
 @app.get("/debug")
 def debug_info():
     import pkg_resources
-    import sqlite3
-    
-    db_exists = os.path.exists(DB_PATH)
     bcrypt_version = "Not installed"
     try:
         bcrypt_version = pkg_resources.get_distribution("bcrypt").version
-    except:
+    except Exception:
         pass
-        
+
+    db_url = os.environ.get("DATABASE_URL", "Not set")
+    # Mask the password in the URL for security
+    if "@" in db_url:
+        db_url = db_url.split("@")[0][:15] + "...@" + db_url.split("@")[1]
+
     return {
-        "db_path": DB_PATH,
-        "db_exists": db_exists,
+        "database": db_url,
         "bcrypt_version": bcrypt_version,
         "python_version": sys.version,
         "env": {
@@ -187,13 +188,15 @@ async def register(user_data: UserRegister):
         existing = get_user_by_email(user_data.email)
         if existing:
             raise HTTPException(status_code=400, detail="Email already registered")
-        
+
         user_id = str(uuid.uuid4())
         hashed = hash_password(user_data.password)
         create_user(user_id, user_data.email, hashed, user_data.full_name)
-        
+
         access_token = create_access_token(data={"sub": user_id})
         return {"access_token": access_token, "token_type": "bearer", "user": {"email": user_data.email, "name": user_data.full_name}}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error in /auth/register: {e}")
         logger.error(traceback.format_exc())
@@ -205,9 +208,11 @@ async def login(user_data: UserLogin):
         user = get_user_by_email(user_data.email)
         if not user or not user["hashed_password"] or not verify_password(user_data.password, user["hashed_password"]):
             raise HTTPException(status_code=401, detail="Incorrect email or password")
-        
+
         access_token = create_access_token(data={"sub": user["id"]})
         return {"access_token": access_token, "token_type": "bearer", "user": {"email": user["email"], "name": user["full_name"]}}
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error in /auth/login: {e}")
         logger.error(traceback.format_exc())
